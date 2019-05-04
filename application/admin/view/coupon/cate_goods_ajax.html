@@ -1,0 +1,23 @@
+<table class="table table-border table-bordered table-bg">
+    <thead>
+    <tr class="text-c">
+        <th width="10%"></th>
+        <th width="15%">ID</th>
+        <th width="45%">名称</th>
+        <th width="30%">封面</th>
+    </tr>
+    </thead>
+    <tbody>
+    {foreach $data as $key}
+    <tr class="text-c">
+        <td><input name="goods_ids_checked" type="checkbox" value="{$key.id}" onchange="goods_input_change(this,{$key.id})"></td>
+        <td>{$key.id}</td>
+        <td>{$key.name}</td>
+        <td><img src="{$key.thumb_img}" alt="" style="width: 50px;"></td>
+    </tr>
+    {/foreach}
+    </tbody>
+</table>
+<div class="paginate">
+    {$page|raw}
+</div>

@@ -1,0 +1,321 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta name="renderer" content="webkit|ie-comp|ie-stand">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1.0,maximum-scale=1.0,user-scalable=no" />
+    <meta http-equiv="Cache-Control" content="no-siteapp" />
+    <link rel="Bookmark" href="/favicon.ico" >
+    <link rel="Shortcut Icon" href="/favicon.ico" />
+    {include file="common/header_source"}
+    <!--/meta 作为公共模版分离出去-->
+    <link rel="stylesheet" href="__STATIC__/lib/zTree/v3/css/zTreeStyle/zTreeStyle.css" type="text/css">
+    <title>添加优惠券</title>
+    <style>
+        .a{
+            overflow: hidden;
+        }
+        .a>div{
+            /*width: 50% !important;*/
+            float: left;
+        }
+        .pos-a{
+            position: static ;
+        }
+    </style>
+</head>
+<body>
+<article class="page-container">
+    <input type="hidden" name="cate_id" value="0" level="0">
+    <form method="post" class="form form-horizontal" id="form-member-add">
+        <input type="hidden" name="goods_ids" value="">
+        <div class="row cl">
+            <label class="form-label col-xs-4 col-sm-2"><span class="c-red">*</span>名称：</label>
+            <div class="formControls col-xs-8 col-sm-9">
+                <input type="text" class="input-text" value="" placeholder="" name="name">
+            </div>
+        </div>
+        <div class="row cl">
+            <label class="form-label col-xs-4 col-sm-2"><span class="c-red">*</span>发放类型：</label>
+            <div class="formControls col-xs-8 col-sm-9"> <span class="select-box">
+				<select class="select" size="1" name="put_type">
+                    <option value="2">用户领取</option>
+					<option value="1">全场发放</option>
+					<option value="3">新用户注册</option>
+				</select>
+				</span> </div>
+        </div>
+        <div class="row cl" id="coupon_type">
+            <label class="form-label col-xs-4 col-sm-2"><span class="c-red">*</span>优惠券类型：</label>
+            <div class="formControls col-xs-8 col-sm-9"> <span class="select-box">
+				<select class="select" size="1" name="type">
+					<option value="1">满减券</option>
+					<option value="2">折扣券</option>
+					<option value="3">现金券</option>
+				</select>
+				</span> </div>
+        </div>
+        <div class="row cl" id="count">
+            <label class="form-label col-xs-4 col-sm-2"><span class="c-red">*</span>发放数量：</label>
+            <div class="formControls col-xs-8 col-sm-9">
+                <input type="text" class="input-text" placeholder="" name="count">
+            </div>
+        </div>
+        <div class="row cl" id="is_all">
+            <label class="form-label col-xs-4 col-sm-2"><span class="c-red">*</span>是否全场可用：</label>
+            <div class="formControls col-xs-8 col-sm-9 ">
+                <div class="skin-minimal">
+                    <div class="radio-box">
+                        <input type="radio" value="1" id="radio-2" name="is_all" checked>
+                        <label for="radio-2">是</label>
+                    </div>
+                    <div class="radio-box">
+                        <input type="radio" value="0" id="radio-1" name="is_all" >
+                        <label for="radio-1">否</label>
+                    </div>
+                </div>
+                <div style="margin-top:10px;display: none;" class="a" id="select_goods">
+                    <div class="pos-a" style="width: 25%;">
+                        <ul id="treeDemo" class="ztree"></ul>
+                    </div>
+                    <div style="width: 75%;display: inline-block;" id="goods_list"></div>
+                </div>
+            </div>
+        </div>
+        <div class="row cl">
+            <label class="form-label col-xs-4 col-sm-2"><span class="c-red">*</span>优惠力度：</label>
+            <div class="formControls col-xs-8 col-sm-9">
+                <input type="text" class="input-text" placeholder="折扣券写折扣 满减券写减少金额 现金券写到账金额" name="money">
+            </div>
+        </div>
+        <div class="row cl" id="manzu">
+            <label class="form-label col-xs-4 col-sm-2"><span class="c-red">*</span>满足金额：</label>
+            <div class="formControls col-xs-8 col-sm-9">
+                <input type="text" class="input-text" placeholder="" name="cond">
+            </div>
+        </div>
+        <div class="row cl">
+            <label class="form-label col-xs-4 col-sm-2"><span class="c-red">*</span>发放开始日期</label>
+            <div class="formControls col-xs-8 col-sm-9">
+                <input type="text" name="put_time" {literal}onfocus="WdatePicker({ dateFmt:'yyyy-MM-dd HH:mm:ss'})"{/literal} class="input-text Wdate" style="width:180px;">
+            </div>
+        </div>
+        <div class="row cl">
+            <label class="form-label col-xs-4 col-sm-2"><span class="c-red">*</span>发放截止日期</label>
+            <div class="formControls col-xs-8 col-sm-9">
+                <input type="text" name="put_end_time" {literal}onfocus="WdatePicker({ dateFmt:'yyyy-MM-dd HH:mm:ss'})"{/literal} class="input-text Wdate" style="width:180px;">
+            </div>
+        </div>
+        <div class="row cl">
+            <label class="form-label col-xs-4 col-sm-2"><span class="c-red">*</span>使用开始日期</label>
+            <div class="formControls col-xs-8 col-sm-9">
+                <input type="text" name="start_time" {literal}onfocus="WdatePicker({ dateFmt:'yyyy-MM-dd HH:mm:ss'})"{/literal} class="input-text Wdate" style="width:180px;">
+            </div>
+        </div>
+        <div class="row cl">
+            <label class="form-label col-xs-4 col-sm-2"><span class="c-red">*</span>使用截止日期</label>
+            <div class="formControls col-xs-8 col-sm-9">
+                <input type="text" name="end_time" {literal}onfocus="WdatePicker({ dateFmt:'yyyy-MM-dd HH:mm:ss'})"{/literal} class="input-text Wdate" style="width:180px;">
+            </div>
+        </div>
+        <div class="row cl">
+            <label class="form-label col-xs-4 col-sm-2">备注：</label>
+            <div class="formControls col-xs-8 col-sm-9">
+                <textarea name="desc" cols="" rows="" class="textarea"  placeholder=""></textarea>
+            </div>
+        </div>
+        <div class="row cl">
+            <div class="col-xs-8 col-sm-9 col-xs-offset-4 col-sm-offset-2">
+                <input class="btn btn-primary radius" type="submit" value="&nbsp;&nbsp;提交&nbsp;&nbsp;">
+            </div>
+        </div>
+    </form>
+</article>
+
+<!--_footer 作为公共模版分离出去-->
+{include file="common/js"}
+<!--请在下方写此页面业务相关的脚本-->
+<script type="text/javascript" src="__STATIC__/lib/My97DatePicker/4.8/WdatePicker.js"></script>
+<script type="text/javascript" src="__STATIC__/lib/jquery.validation/1.14.0/jquery.validate.js"></script>
+<script type="text/javascript" src="__STATIC__/lib/jquery.validation/1.14.0/validate-methods.js"></script>
+<script type="text/javascript" src="__STATIC__/lib/jquery.validation/1.14.0/messages_zh.js"></script>
+<script type="text/javascript" src="__STATIC__/lib/zTree/v3/js/jquery.ztree.all-3.5.min.js"></script>
+<script type="text/javascript">
+    $(function(){
+        $('.skin-minimal input').iCheck({
+            checkboxClass: 'icheckbox-blue',
+            radioClass: 'iradio-blue',
+            increaseArea: '20%'
+        });
+
+        //优惠券类型 改变 触发
+        $('select[name=type]').change(function(){
+            if ($(this).val() == 1){    //满减
+                $('#manzu').css('display','block');
+            }else{  //现金 折扣
+                $('#manzu').css('display','none');
+            }
+            $('#manzu').val('');
+            if ($(this).val() == 3){
+                $('#is_all').css('display','none');
+            }else{
+                $('#is_all').css('display','block');
+            }
+            console.log($('input[name=goods_ids]').val());
+        })
+
+        //ztree 配置
+        var setting = {
+            view: {
+                dblClickExpand: true,
+                showLine: false,
+                selectedMulti: true,
+            },
+            data: {
+                simpleData: {
+                    enable: true,
+                    idKey: "id",
+                    pIdKey: "pid",
+                    rootPId: ""
+                }
+            },
+            callback: {
+                beforeClick: function(treeId, treeNode) {
+                    //录入隐藏域
+
+                    //发送ajax
+                    var zTree = $.fn.zTree.getZTreeObj("tree");
+                    if (treeNode.level == 2 || treeNode.level == 0){
+                        var obj = $('input[name=cate_id]');
+                        obj.val(treeNode.id);
+                        show_goods_list();
+                    }
+                }
+            }
+        };
+        var zNodes ;
+        //异步加载分类
+        $(document).ready(function () {
+            var t = $("#treeDemo");
+
+            $.ajax({
+                url: "{:url('admin/Base/getCate')}",
+                type: 'post',
+                dataType: 'json',
+                data: 'type=1',
+                success: function (data) {
+                    zNodes = data;
+                    $.fn.zTree.init(t, setting, data);
+                }
+            })
+            demoIframe = $("#testIframe");
+            // demoIframe.on("load", loadReady);
+            var zTree = $.fn.zTree.getZTreeObj("tree");
+            // zTree.selectNode(zTree.getNodeByParam("id",'11'));
+        });
+
+        //显示商品列表
+        show_goods_list = function(page = 1)
+        {
+            cate_id = $('input[name=cate_id]').val();
+            $.ajax({
+                url:"{:url('admin/Coupon/add')}",
+                type:'post',
+                data:"cate_id="+cate_id+"&page="+page,
+                dataType:'json',
+                success:function(data){
+                    $('#goods_list').html(data.html);
+
+                    var arr = $('input[name=goods_ids]').val().split(',');
+                    console.log(arr);
+                    //判断是否选中 选中则给勾上
+                    $('input[name=goods_ids_checked]').each(function(key,val){
+                        if ($.inArray($(val).val(),arr) > -1 ) {
+                            $(val).prop('checked',true);
+                        }
+                    })
+                }
+            })
+        }
+
+        //发放类型
+        $('select[name=put_type]').change(function(){
+            if ($(this).val() == 2){
+                $('#count').css('display','block');
+            } else{
+                $('#count').css('display','none');
+            }
+        })
+
+        //全场可用 变动 单选框
+        $('#is_all ins').click(function(){
+            var res = $(this).parent().find('input[name=is_all]').val();
+            if (res == 1){
+                $('#select_goods').css('display','none');
+                $('input[name=goods_ids]').val('');
+                $('input[name=goods_ids_checked]').prop('checked',false);
+            }else{      //如果全场不可用
+                $('#select_goods').css('display','block');
+            }
+        })
+
+        //商品选择框变动
+        goods_input_change = function(_this,goods_id)
+        {
+            var ids = $('input[name=goods_ids]').val().split(',');
+
+            if (ids[0] == ''){
+                ids = [];
+            }
+            var status = $(_this).prop('checked');
+            var flag = false;
+            $.each(ids,function(index,value){
+                if (value == goods_id){
+                    flag = index;
+                    return;
+                }
+            })
+            if (flag === false){  //如果数组没有
+                if (status){    //如果没选中    //添加到数组
+                    ids[ids.length] = goods_id;
+                }
+            }else{  //如果有
+                if (!status){    //如果没选中      //从数组 删除
+                    ids.splice(flag,1);
+                }
+            }
+            $('input[name=goods_ids]').val(ids.join(','));
+
+            console.log($('input[name=goods_ids]').val());
+        }
+
+        //表单提交
+        $('form').submit(function(){
+            var data = new FormData($('form')[0]);
+            $.ajax({
+                url:"{:url('admin/Coupon/AddChange')}",
+                data:data,
+                type:'post',
+                dataType:'json',
+                processData:false,
+                contentType:false,
+                success:function(data)
+                {
+                    if (data.code == 0){
+                        layer.alert(data.msg);
+                    } else{
+                        layer.alert(data.msg,function(){
+                            var index = parent.layer.getFrameIndex(window.name);
+                            parent.layer.close(index);
+                        })
+                    }
+                }
+            })
+            return false;
+        })
+    });
+</script>
+<!--/请在上方写此页面业务相关的脚本-->
+</body>
+</html>

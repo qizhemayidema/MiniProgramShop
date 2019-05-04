@@ -1,0 +1,137 @@
+<!--_meta 作为公共模版分离出去-->
+<!DOCTYPE HTML>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta name="renderer" content="webkit|ie-comp|ie-stand">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1.0,maximum-scale=1.0,user-scalable=no" />
+    <meta http-equiv="Cache-Control" content="no-siteapp" />
+    {include file="common/header_source"}
+    <!--/meta 作为公共模版分离出去-->
+    <link href="__STATIC__/lib/webuploader/0.1.5/webuploader.css" rel="stylesheet" type="text/css" />
+    <title>添加等级</title>
+</head>
+<body>
+<article class="page-container">
+    <form action="{:url('admin/UserRanks/addChange')}" method="post" class="form form-horizontal" id="form-member-add">
+        <input type="hidden" name="rank_img" value="">
+        <div class="row cl">
+            <label class="form-label col-xs-4 col-sm-3"><span class="c-red">*</span>等级名称：</label>
+            <div class="formControls col-xs-8 col-sm-9">
+                <input type="text" class="input-text" value="" placeholder="" name="rank_name">
+            </div>
+        </div>
+        <div class="row cl">
+            <label class="form-label col-xs-4 col-sm-3"><span class="c-red">*</span>等级开始积分：</label>
+            <div class="formControls col-xs-8 col-sm-9">
+                <input type="text" class="input-text" value="" placeholder=""  name="start_score">
+            </div>
+        </div>
+        <div class="row cl">
+            <label class="form-label col-xs-4 col-sm-3"><span class="c-red">*</span>权重：</label>
+            <div class="formControls col-xs-8 col-sm-9">
+                <input type="text" class="input-text" value="" placeholder="" name="sort_score">
+            </div>
+        </div>
+        <div class="row cl">
+            <label class="form-label col-xs-4 col-sm-3"><span class="c-red">*</span>等级图像标识：</label>
+            <div class="formControls col-xs-8 col-sm-9" id="thumb_img_div">
+                <div id="uploader" class="wu-example">
+                    <!--用来存放文件信息-->
+                    <div id="thelist" class="uploader-list"></div>
+                    <div class="btns">
+                        <div id="picker">选择文件</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="row cl">
+            <label class="form-label col-xs-4 col-sm-3">备注：</label>
+            <div class="formControls col-xs-8 col-sm-9">
+                <textarea name="desc" cols="" rows="" class="textarea"  placeholder=""></textarea>
+            </div>
+        </div>
+        <div class="row cl">
+            <div class="col-xs-8 col-sm-9 col-xs-offset-4 col-sm-offset-3">
+                <input class="btn btn-primary radius" type="submit" value="&nbsp;&nbsp;提交&nbsp;&nbsp;">
+            </div>
+        </div>
+    </form>
+</article>
+
+<!--_footer 作为公共模版分离出去-->
+{include file="common/js"}
+<!--请在下方写此页面业务相关的脚本-->
+<script type="text/javascript" src="__STATIC__/lib/My97DatePicker/4.8/WdatePicker.js"></script>
+<script type="text/javascript" src="__STATIC__/lib/jquery.validation/1.14.0/jquery.validate.js"></script>
+<script type="text/javascript" src="__STATIC__/lib/jquery.validation/1.14.0/validate-methods.js"></script>
+<script type="text/javascript" src="__STATIC__/lib/jquery.validation/1.14.0/messages_zh.js"></script>
+<script type="text/javascript" src="__STATIC__/lib/webuploader/0.1.5/webuploader.min.js"></script>
+<script type="text/javascript">
+    $(function(){
+        // 初始化Web Uploader  //图标标识
+        var uploader1 = WebUploader.create({
+
+            // 选完文件后，是否自动上传。
+            auto: true,
+
+            // swf文件路径
+            swf: '__STATIC__/lib/webuploader/0.1.5/Uploader.swf',
+
+            // 文件接收服务端。
+            server: "{:url('admin/Base/uploaders')}",
+
+            // 选择文件的按钮。可选。
+            // 内部根据当前运行是创建，可能是input元素，也可能是flash.
+            pick: {
+                id: '#picker',
+                multiple:false,
+                label: '点击选择图片'
+            },
+            fileNumLimit:100,
+            // 只允许选择图片文件。
+            accept: {
+                title: 'Images',
+                extensions: 'gif,jpg,jpeg,bmp,png',
+                mimeTypes: 'image/*'
+            }
+        });
+        uploader1.on('uploadSuccess', function (file, response) {
+            $('input[name=rank_img]').val(response.message);
+            $('#thumb_img_div .item').remove();
+            $('#thumb_img_div').append('<div class="item">' +
+                '<h4 class="info"> <img src="'+ response.message +'" style="height: 96px;"></h4>' +
+                '<p class="state"></p>' +
+                '</div>' );
+        });
+
+        //表单提交
+        $('form').submit(function(){
+            var data = new FormData($('form')[0]);
+            $.ajax({
+                url:"{:url('admin/UserRanks/addChange')}",
+                type:"post",
+                data:data,
+                dataType:"json",
+                processData:false,
+                contentType:false,
+                success:function(data){
+                    if (data.code == 0){
+                        layer.alert(data.msg);
+                    } else{
+                        layer.alert(data.msg,function(){
+                            var index = parent.layer.getFrameIndex(window.name);
+                            parent.layer.close(index);
+                        })
+                    }
+                }
+            })
+
+            return false;
+        })
+    });
+</script>
+<!--/请在上方写此页面业务相关的脚本-->
+</body>
+</html>

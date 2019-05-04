@@ -1,0 +1,310 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta name="renderer" content="webkit|ie-comp|ie-stand">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1.0,maximum-scale=1.0,user-scalable=no" />
+    <meta http-equiv="Cache-Control" content="no-siteapp" />
+    <link rel="stylesheet" href="__STATIC__/lib/zTree/v3/css/zTreeStyle/zTreeStyle.css" type="text/css">
+    <link href="__STATIC__/lib/webuploader/0.1.5/webuploader.css" rel="stylesheet" type="text/css" />
+    {include file="common/header_source"}
+    <title>分类管理</title>
+</head>
+<body>
+<nav class="breadcrumb"><i class="Hui-iconfont">&#xe67f;</i> 商品管理 <span class="c-gray en">&gt;</span> 分类管理 <span class="c-gray en">&gt;</span> 分类列表 <a class="btn btn-success radius r" style="line-height:1.6em;margin-top:3px" href="javascript:location.replace(location.href);" title="刷新" ><i class="Hui-iconfont">&#xe68f;</i></a></nav>
+<table class="table">
+    <tr>
+        <td width="200" class="va-t"><ul id="treeDemo" class="ztree"></ul></td>
+        <td class="va-t">
+            <div>
+                <form action="{:url('admin/Category/addChange')}" method="post" class="form form-horizontal" id="cate_add">
+                    <input type="hidden" name="img_url" value="">
+                    <div class="row cl">
+                        <label class="form-label col-xs-4 col-sm-2">
+                            <span class="c-red">*</span>
+                            父级名称：</label>
+                        <div class="formControls col-xs-6 col-sm-6">
+                            <span id="add_pname"></span>
+                            <input type="hidden" name="pid" value="">
+                            <input type="hidden" name="depth" value="">
+                        </div>
+                    </div>
+                    <div class="row cl">
+                        <label class="form-label col-xs-4 col-sm-2">分类名称：</label>
+                        <div class="formControls col-xs-6 col-sm-6">
+                            <input type="text" class="input-text" value="" placeholder="" name="name" name="product-category-name">
+                        </div>
+                    </div>
+                    <div class="row cl" id="roll_pic_box">
+                        <label class="form-label col-xs-4 col-sm-2"><span class="c-red">*</span>封面图：</label>
+                        <div class="formControls col-xs-8 col-sm-9" id="roll_pic_div">
+                            <div>
+                                <div id="uploader" class="wu-example">
+                                    <!--用来存放文件信息-->
+                                    <div id="thelist" class="uploader-list"></div>
+                                    <div class="btns">
+                                        <div id="picker">选择文件</div>
+                                        <!--<button id="ctlBtn" class="btn btn-default">开始上传</button>-->
+                                    </div>
+                                </div>
+                            </div>
+                            <div id="roll_pic_div_img_1"></div>
+                        </div>
+                    </div>
+                    <div class="row cl">
+                        <div class="col-9 col-offset-2">
+                            <input class="btn btn-primary radius" type="submit" value="&nbsp;&nbsp;新增分类&nbsp;&nbsp;">
+                        </div>
+                    </div>
+                </form>
+            </div>
+            <div>
+                <form action="" method="post" class="form form-horizontal" id="cate_edit">
+                    <input type="hidden" name="img_url" value="">
+                    <div class="row cl">
+                        <label class="form-label col-xs-4 col-sm-2">分类名称：</label>
+                        <div class="formControls col-xs-6 col-sm-6">
+                            <input type="text" class="input-text" value="" placeholder="" name="name" name="product-category-name">
+                            <input type="hidden" name="id">
+                        </div>
+                    </div>
+                    <div class="row cl" id="roll_pic_box_2">
+                        <label class="form-label col-xs-4 col-sm-2"><span class="c-red">*</span>封面图：</label>
+                        <div class="formControls col-xs-8 col-sm-9" id="roll_pic_div_2">
+                            <div>
+                                <div id="uploader_2" class="wu-example">
+                                    <!--用来存放文件信息-->
+                                    <div id="thelist_2" class="uploader-list"></div>
+                                    <div class="btns">
+                                        <div id="picker_2">选择文件</div>
+                                        <!--<button id="ctlBtn" class="btn btn-default">开始上传</button>-->
+                                    </div>
+                                </div>
+                            </div>
+                            <div id="roll_pic_div_img_2"></div>
+                        </div>
+                    </div>
+                    <div class="row cl">
+                        <div class="col-9 col-offset-2">
+                            <input class="btn btn-primary radius" type="submit" value="&nbsp;&nbsp;修改分类&nbsp;&nbsp;">
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </td>
+    </tr>
+</table>
+<!--_footer 作为公共模版分离出去-->
+<script type="text/javascript" src="__STATIC__/lib/jquery/1.9.1/jquery.min.js"></script>
+<script type="text/javascript" src="__STATIC__/lib/layer/2.4/layer.js"></script>
+<script type="text/javascript" src="__STATIC__/static/h-ui/js/H-ui.min.js"></script>
+<script type="text/javascript" src="__STATIC__/static/h-ui.admin/js/H-ui.admin.js"></script> <!--/_footer 作为公共模版分离出去-->
+
+<!--请在下方写此页面业务相关的脚本-->
+<script type="text/javascript" src="__STATIC__/lib/zTree/v3/js/jquery.ztree.all-3.5.min.js"></script>
+<script type="text/javascript" src="__STATIC__/lib/webuploader/0.1.5/webuploader.min.js"></script>
+<script type="text/javascript">
+    var setting = {
+        view: {
+            dblClickExpand: true,
+            showLine: false,
+            selectedMulti: true,
+        },
+        data: {
+            simpleData: {
+                enable: true,
+                idKey: "id",
+                pIdKey: "pid",
+                rootPId: ""
+            }
+        },
+        callback: {
+            beforeClick: function(treeId, treeNode) {
+                console.log(treeNode);
+                $('#add_pname').text(treeNode.name);
+                $('#cate_add input[name=pid]').val(treeNode.id);
+                $('#cate_add input[name=depth]').val(treeNode.level + 1);
+                $('#cate_edit input[name=id]').val(treeNode.id);
+                $('#cate_edit input[name=name]').val(treeNode.name);
+                $('#cate_edit input[name=img_url]').val(treeNode.img_url);
+                if (treeNode.level != 0){
+                    $('#roll_pic_div_img_2').html('');
+                    $('#roll_pic_div_img_2').append('<div class="item">' +
+                        '<h4 class="info"> <img src="'+ treeNode.img_url +'" style="height: 100px;"></h4>' +
+                        '<p class="state"></p>' +
+                        '</div>' );
+                }
+                var zTree = $.fn.zTree.getZTreeObj("tree");
+                if (treeNode.isParent) {
+                    // zTree.expandNode(treeNode);
+                    return false;
+                } else {
+                    demoIframe.attr("src",treeNode.file + ".html");
+                    return true;
+                }
+            }
+        }
+    };
+
+    var zNodes;
+
+    var code;
+
+    function showCode(str) {
+        if (!code) code = $("#code");
+        code.empty();
+        code.append("<li>"+str+"</li>");
+    }
+
+    $(document).ready(function(){
+        var t = $("#treeDemo");
+
+        $.ajax({
+            url:"{:url('admin/Base/getCate')}",
+            type:'post',
+            dataType:'json',
+            data:'type=1',
+            success:function(data){
+                console.log(data);
+                zNodes = data;
+                $.fn.zTree.init(t, setting, data);
+            }
+        })
+        demoIframe = $("#testIframe");
+        // demoIframe.on("load", loadReady);
+        var zTree = $.fn.zTree.getZTreeObj("tree");
+        // zTree.selectNode(zTree.getNodeByParam("id",'11'));
+
+
+        //新增提交时
+        $('#cate_add').submit(function(){
+            var data = new FormData($('#cate_add')[0]);
+            if ( $('#cate_add input[name=depth]').val() >= 3 ){
+                layer.alert('最多只能添加二级分类');
+                return false;
+            }
+            $.ajax({
+                url:"{:url('admin/Category/addChange')}",
+                type:'post',
+                data:data,
+                dataType:'json',
+                processData:false,
+                contentType:false,
+                success:function(data){
+                    if (data.code == 0){
+                        layer.alert(data.msg);
+                    } else{
+                        layer.alert(data.msg,function(){
+                            location.reload();
+                        })
+                    }
+                }
+            })
+            return false;
+        })
+
+        //修改提交时
+        $('#cate_edit').submit(function(){
+            if ($('#cate_edit input[name=id]').val() == 0){
+                layer.alert('顶级分类无法修改');
+                return false;
+            }
+            var data = new FormData($('#cate_edit')[0]);
+            $.ajax({
+                url:"{:url('admin/Category/editChange')}",
+                data:data,
+                type:'post',
+                dataType:'json',
+                processData:false,
+                contentType:false,
+                success:function(data){
+                    if (data.code == 0){
+                        layer.alert(data.msg);
+                    } else{
+                        layer.alert(data.msg,function(){
+                            location.reload();
+                        })
+                    }
+                }
+            })
+
+            return false;
+        })
+
+        // 初始化Web Uploader  //封面 新增
+        var uploader1 = WebUploader.create({
+
+            // 选完文件后，是否自动上传。
+            auto: true,
+
+            // swf文件路径
+            swf: '__STATIC__/lib/webuploader/0.1.5/Uploader.swf',
+
+            // 文件接收服务端。
+            server: "{:url('admin/Base/uploaders')}",
+
+            // 选择文件的按钮。可选。
+            // 内部根据当前运行是创建，可能是input元素，也可能是flash.
+            pick: {
+                id: '#picker',
+                multiple:false,
+                label: '点击选择图片'
+            },
+            fileNumLimit:100,
+            // 只允许选择图片文件。
+            accept: {
+                title: 'Images',
+                extensions: 'gif,jpg,jpeg,bmp,png',
+                mimeTypes: 'image/*'
+            }
+        });
+        uploader1.on('uploadSuccess', function (file, response) {
+            console.log(response);
+            $('#cate_add input[name=img_url]').val(response.message);
+            $('#roll_pic_div_img_1').html('');
+            $('#roll_pic_div_img_1').append('<div class="item">' +
+                '<h4 class="info"> <img src="'+ response.message +'" style="height: 100px;"></h4>' +
+                '<p class="state"></p>' +
+                '</div>' );
+        });
+
+        // 初始化Web Uploader  //封面 修改
+        var uploader1 = WebUploader.create({
+
+            // 选完文件后，是否自动上传。
+            auto: true,
+
+            // swf文件路径
+            swf: '__STATIC__/lib/webuploader/0.1.5/Uploader.swf',
+
+            // 文件接收服务端。
+            server: "{:url('admin/Base/uploaders')}",
+
+            // 选择文件的按钮。可选。
+            // 内部根据当前运行是创建，可能是input元素，也可能是flash.
+            pick: {
+                id: '#picker_2',
+                multiple:false,
+                label: '点击选择图片'
+            },
+            fileNumLimit:100,
+            // 只允许选择图片文件。
+            accept: {
+                title: 'Images',
+                extensions: 'gif,jpg,jpeg,bmp,png',
+                mimeTypes: 'image/*'
+            }
+        });
+        uploader1.on('uploadSuccess', function (file, response) {
+            $('#cate_edit input[name=img_url]').val(response.message);
+            $('#roll_pic_div_img_2').html('');
+            $('#roll_pic_div_img_2').append('<div class="item">' +
+                '<h4 class="info"> <img src="'+ response.message +'" style="height: 100px;"></h4>' +
+                '<p class="state"></p>' +
+                '</div>' );
+        });
+    });
+</script>
+</body>
+</html>

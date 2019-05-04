@@ -1,0 +1,19 @@
+{volist id="res" name="data"}
+<tr class="text-c va-m odd" role="row">
+    <!--<td><input name="" type="checkbox" value=""></td>-->
+    <td class="sorting_1">{$res.id}</td>
+    <td>{$res.cate_name}</td>
+    <td>{$res.name}</td>
+    <td>{$res.type}</td>
+    <td>{$res.edit_type}</td>
+    <td>{$res.value}</td>
+    <td>
+        <a style="text-decoration:none" class="ml-5" onclick="product_edit('产品编辑','{:url('admin/Attribute/edit',['id'=>$res.id])}','10001')" href="javascript:;" title="编辑">
+            <i class="Hui-iconfont"></i>
+        </a>
+        <a style="text-decoration:none" class="ml-5" onclick="product_del(this,{$res.id})" href="javascript:;" title="删除">
+            <i class="Hui-iconfont"></i>
+        </a>
+    </td>
+</tr>
+{/volist}

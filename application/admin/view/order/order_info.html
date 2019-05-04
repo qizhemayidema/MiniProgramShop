@@ -1,0 +1,231 @@
+<!--_meta 作为公共模版分离出去-->
+<!DOCTYPE HTML>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta name="renderer" content="webkit|ie-comp|ie-stand">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1.0,maximum-scale=1.0,user-scalable=no" />
+    <meta http-equiv="Cache-Control" content="no-siteapp" />
+    {include file="common/header_source"}
+    <!--/meta 作为公共模版分离出去-->
+    <link href="__STATIC__/lib/webuploader/0.1.5/webuploader.css" rel="stylesheet" type="text/css" />
+    <title>添加等级</title>
+</head>
+<body>
+<article class="page-container">
+        <div class="row cl">
+            <label class="form-label col-xs-4 col-sm-3">订单编号：</label>
+            <div class="formControls col-xs-8 col-sm-9">
+                <span>{$order_info.order_code}</span>
+            </div>
+        </div>
+    <div class="row cl">
+        <label class="form-label col-xs-4 col-sm-3">用户名称：</label>
+        <div class="formControls col-xs-8 col-sm-9">
+            <span>{$order_info.user_nick}</span>
+        </div>
+    </div>
+    <div class="row cl">
+        <label class="form-label col-xs-4 col-sm-3">用户会员等级：</label>
+        <div class="formControls col-xs-8 col-sm-9">
+            <span>{$order_info.user_rank_name}</span>
+        </div>
+    </div>
+    <div class="row cl">
+        <label class="form-label col-xs-4 col-sm-3">优惠前价格：</label>
+        <div class="formControls col-xs-8 col-sm-9">
+            <span>{$order_info.all_price}</span>
+        </div>
+    </div>
+    <div class="row cl">
+        <label class="form-label col-xs-4 col-sm-3">优惠金额：</label>
+        <div class="formControls col-xs-8 col-sm-9">
+            <span>{$order_info.coupon_money}</span>
+        </div>
+    </div>
+    <div class="row cl">
+        <label class="form-label col-xs-4 col-sm-3">结算金额：</label>
+        <div class="formControls col-xs-8 col-sm-9">
+            <span>{$order_info.coupon_all_price}</span>
+        </div>
+    </div>
+    <div class="row cl">
+        <label class="form-label col-xs-4 col-sm-3">账单状态：</label>
+        <div class="formControls col-xs-8 col-sm-9">
+            <span>
+                {if $order_info.status == 1}
+                    未支付
+                    {elseif $order_info.status == 2}
+                    已支付
+                    {elseif $order_info.status == 3}
+                    待发货
+                    {elseif $order_info.status == 4}
+                    已发货
+                    {elseif $order_info.status == 5}
+                    待评价
+                    {elseif $order_info.status == 6}
+                    交易成功
+                    {/if}
+            </span>
+        </div>
+    </div>
+    <div class="row cl">
+        <label class="form-label col-xs-4 col-sm-3">送货方式：</label>
+        <div class="formControls col-xs-8 col-sm-9">
+            <span>
+                    {if $order_info.post_type == 1}
+                    货到付邮
+                    {elseif $order_info.post_type == 2}
+                    自提
+                    {/if}
+            </span>
+        </div>
+    </div>
+    <div class="row cl">
+        <label class="form-label col-xs-4 col-sm-3">自提状态：</label>
+        <div class="formControls col-xs-8 col-sm-9">
+            <span>
+                {if $order_info.post_type == 2}
+                    {if $order_info.pick_up_status == 0}
+                        未完成
+                    {elseif $order_info.pick_up_status == 1}
+                        已完成
+                    {/if}
+                    {/if}
+            </span>
+        </div>
+    </div>
+    <div class="row cl">
+        <label class="form-label col-xs-4 col-sm-3">备注：</label>
+        <div class="formControls col-xs-8 col-sm-9">
+            <span>{$order_info.desc}</span>
+        </div>
+    </div>
+    <div class="row cl">
+        <label class="form-label col-xs-4 col-sm-3">下单时间：</label>
+        <div class="formControls col-xs-8 col-sm-9">
+            <span>{$order_info.create_time|date="Y-m-d H:i:s"}</span>
+        </div>
+    </div>
+    <div class="row cl">
+        <label class="form-label col-xs-4 col-sm-3">支付时间：</label>
+        <div class="formControls col-xs-8 col-sm-9">
+            <span>
+                {if $order_info.pay_time}
+                {$order_info.pay_time|date="Y-m-d H:i:s"}
+                {/if}
+            </span>
+        </div>
+    </div>
+    <hr>
+    <!--商品 循环-->
+    {foreach $order_goods as $goods}
+    <div class="row cl">
+        <label class="form-label col-xs-4 col-sm-3">商品名称：</label>
+        <div class="formControls col-xs-8 col-sm-9">
+            <span>{$goods.goods_name}</span>
+        </div>
+    </div>
+    <div class="row cl">
+        <label class="form-label col-xs-4 col-sm-3">商品封面：</label>
+        <div class="formControls col-xs-8 col-sm-9">
+            <span><img src="{$goods.goods_thumb_img}" alt="" width="150"></span>
+        </div>
+    </div>
+    {php} $temp = json_decode($goods['sku_group'],true);{/php}
+
+    {if $temp != ''}
+    <div class="row cl">
+        <label class="form-label col-xs-4 col-sm-3">商品sku：</label>
+        <div class="formControls col-xs-8 col-sm-9">
+            <span>
+
+                {foreach $temp as $key}
+                    {$key.name} : {$key.value}
+                    <br/>
+                {/foreach}
+            </span>
+        </div>
+    </div>
+    {/if}
+    <div class="row cl">
+        <label class="form-label col-xs-4 col-sm-3">商品单价：</label>
+        <div class="formControls col-xs-8 col-sm-9">
+            <span>{$goods.goods_price}</span>
+        </div>
+    </div>
+    <div class="row cl">
+        <label class="form-label col-xs-4 col-sm-3">购买时会员售价：</label>
+        <div class="formControls col-xs-8 col-sm-9">
+            <span>{$goods.goods_rank_price}</span>
+        </div>
+    </div>
+    {/foreach}
+
+    <hr>
+    <!--送货地址-->
+    <div class="row cl">
+        <label class="form-label col-xs-4 col-sm-3">省份：</label>
+        <div class="formControls col-xs-8 col-sm-9">
+            <span>{$order_shipping.province}</span>
+        </div>
+    </div>
+    <div class="row cl">
+        <label class="form-label col-xs-4 col-sm-3">城市：</label>
+        <div class="formControls col-xs-8 col-sm-9">
+            <span>{$order_shipping.city}</span>
+
+        </div>
+    </div>
+    <div class="row cl">
+        <label class="form-label col-xs-4 col-sm-3">区域：</label>
+        <div class="formControls col-xs-8 col-sm-9">
+            <span>{$order_shipping.region}</span>
+
+        </div>
+    </div>
+    <div class="row cl">
+        <label class="form-label col-xs-4 col-sm-3">详细信息：</label>
+        <div class="formControls col-xs-8 col-sm-9">
+            <span>{$order_shipping.desc}</span>
+
+        </div>
+    </div>
+    <div class="row cl">
+        <label class="form-label col-xs-4 col-sm-3">联系人姓名：</label>
+        <div class="formControls col-xs-8 col-sm-9">
+            <span>{$order_shipping.user_name}</span>
+
+        </div>
+    </div>
+    <div class="row cl">
+        <label class="form-label col-xs-4 col-sm-3">联系人电话：</label>
+        <div class="formControls col-xs-8 col-sm-9">
+            <span>{$order_shipping.user_phone}</span>
+
+        </div>
+    </div>
+    <div class="row cl">
+        <label class="form-label col-xs-4 col-sm-3">座机电话：</label>
+        <div class="formControls col-xs-8 col-sm-9">
+            <span>{$order_shipping.user_telephone}</span>
+        </div>
+    </div>
+
+</article>
+
+<!--_footer 作为公共模版分离出去-->
+{include file="common/js"}
+<!--请在下方写此页面业务相关的脚本-->
+<script type="text/javascript" src="__STATIC__/lib/My97DatePicker/4.8/WdatePicker.js"></script>
+<script type="text/javascript" src="__STATIC__/lib/jquery.validation/1.14.0/jquery.validate.js"></script>
+<script type="text/javascript" src="__STATIC__/lib/jquery.validation/1.14.0/validate-methods.js"></script>
+<script type="text/javascript" src="__STATIC__/lib/jquery.validation/1.14.0/messages_zh.js"></script>
+<script type="text/javascript" src="__STATIC__/lib/webuploader/0.1.5/webuploader.min.js"></script>
+<script type="text/javascript">
+
+</script>
+<!--/请在上方写此页面业务相关的脚本-->
+</body>
+</html>

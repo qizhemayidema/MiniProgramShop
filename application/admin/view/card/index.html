@@ -1,0 +1,113 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta name="renderer" content="webkit|ie-comp|ie-stand">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1.0,maximum-scale=1.0,user-scalable=no" />
+    <meta http-equiv="Cache-Control" content="no-siteapp" />
+    {include file="common/header_source"}
+    <title>现金卡管理</title>
+</head>
+<body>
+<nav class="breadcrumb">
+    <i class="Hui-iconfont">&#xe67f;</i> 优惠券管理 <span class="c-gray en">&gt;</span> 现金卡管理 <span class="c-gray en">&gt;</span> 现金卡列表 <a class="btn btn-success radius r" style="line-height:1.6em;margin-top:3px" href="javascript:location.replace(location.href);" title="刷新" ><i class="Hui-iconfont">&#xe68f;</i></a></nav>
+<div class="page-container">
+    <div class="cl pd-5 bg-1 bk-gray mt-20"> <span class="l">
+        <a class="btn btn-primary radius" onclick="product_add('发放现金卡','{:url('admin/Card/add')}')" href="javascript:;"><i class="Hui-iconfont">&#xe600;</i> 发放现金卡</a></span>
+        <span class="r">共有数据：<strong>{$card_count}</strong> 条</span> </div>
+    <div class="mt-20">
+        <table class="table table-border table-bordered table-bg table-hover">
+            <thead>
+            <tr class="text-c">
+                <th>id</th>
+                <th>名称</th>
+                <th>类型</th>
+                <th>用户入账金额</th>
+                <th>售价金额</th>
+                <th>发放量</th>
+                <th>库存量</th>
+                <th>发放开始时间</th>
+                <th>发放结束时间</th>
+                <th>使用开始时间</th>
+                <th>使用到期时间</th>
+                <th width="100">操作</th>
+            </tr>
+            </thead>
+            <tbody>
+            {foreach $card_info as $key}
+            <tr class="text-c">
+                <td>{$key.id}</td>
+                <td>{$key.card_name}</td>
+                <td>{if $key.is_give == 0}
+                    售卖
+                    {else}
+                    赠送
+                    {/if}
+                </td>
+                <td>{$key.card_money}</td>
+                <td>
+                    {if $key.is_give == 0}
+                    {$key.card_price}
+                    {/if}
+                </td>
+                <td>{$key.card_all_num}</td>
+                <td>{$key.card_num}</td>
+                <td>
+                    {if $key.is_give == 0}
+                    {$key.put_time|date="Y-m-d H:i:s"}
+                    {/if}
+                </td>
+                <td>
+                    {if $key.is_give == 0}
+                    {$key.put_end_time|date="Y-m-d H:i:s"}
+                    {/if}
+                </td>
+                <td>{$key.start_time|date="Y-m-d H:i:s"}</td>
+                <td>{$key.end_time|date="Y-m-d H:i:s"}</td>
+                <td class="f-14 product-brand-manage">
+                    <a style="text-decoration:none" onClick="product_brand_edit('查看用户','{:url('admin/Card/seeCardUser',['card_id'=>$key.id])}','1')" href="javascript:;" title="查看用户"><i class="Hui-iconfont">&#xe725;</i></a>
+                    <!--<a style="text-decoration:none" class="ml-5" onClick="active_del(this,'10001')" href="javascript:;" title="删除"><i class="Hui-iconfont">&#xe6e2;</i></a></td>-->
+            </tr>
+            {/foreach}
+            </tbody>
+        </table>
+        {$card_info->render()|raw}
+    </div>
+</div>
+<!--_footer 作为公共模版分离出去-->
+{include file="common/js"}
+<!--请在下方写此页面业务相关的脚本-->
+<script type="text/javascript" src="__STATIC__/lib/My97DatePicker/4.8/WdatePicker.js"></script>
+<script type="text/javascript" src="__STATIC__/lib/datatables/1.10.0/jquery.dataTables.min.js"></script>
+<script type="text/javascript" src="__STATIC__/lib/laypage/1.2/laypage.js"></script>
+<script type="text/javascript">
+    $('.table-sort').dataTable({
+        "aaSorting": [[ 1, "desc" ]],//默认第几个排序
+        "bStateSave": true,//状态保存
+        "aoColumnDefs": [
+            //{"bVisible": false, "aTargets": [ 3 ]} //控制列的隐藏显示
+            {"orderable":false,"aTargets":[0,6]}// 制定列不参与排序
+        ]
+    });
+
+    /*添加*/
+    function product_add(title,url){
+        var index = layer.open({
+            type: 2,
+            title: title,
+            content: url,
+        });
+        layer.full(index);
+    }
+    function product_brand_edit(title,url){
+        var index = layer.open({
+            type: 2,
+            title: title,
+            content: url,
+        });
+        layer.full(index);
+    }
+</script>
+</body>
+</html>

@@ -1,0 +1,27 @@
+<table class="table table-border table-bordered table-bg">
+    <thead>
+    <tr class="text-c">
+        <th width="5%"></th>
+        <th width="5%">ID</th>
+        <th width="35%">OpenId</th>
+        <th width="20%">名称</th>
+        <th width="20%">头像</th>
+        <th width="20%">发放数量</th>
+    </tr>
+    </thead>
+    <tbody>
+    {foreach $user_info as $key}
+    <tr class="text-c">
+        <td><input type="checkbox" value="{$key.id}" onchange="user_list_input_change(this,'{$key.id}')" user_list_input="checked" ></td>
+        <td class="user_list_id">{$key.id}</td>
+        <td>{$key.openid}</td>
+        <td>{$key.nick_name}</td>
+        <td><img src="{$key.avatar_url}" alt="" style="width: 45px;"></td>
+        <td><input type="text" user_list_input="num" class="input-text" disabled onblur="user_card_sum(this)" user_id="{$key.id}"></td>
+    </tr>
+    {/foreach}
+    </tbody>
+</table>
+<div class="paginate">
+    {$page_info|raw}
+</div>

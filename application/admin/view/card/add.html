@@ -1,0 +1,309 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta name="renderer" content="webkit|ie-comp|ie-stand">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <meta name="viewport"
+          content="width=device-width,initial-scale=1,minimum-scale=1.0,maximum-scale=1.0,user-scalable=no"/>
+    <meta http-equiv="Cache-Control" content="no-siteapp"/>
+    <link rel="Bookmark" href="/favicon.ico">
+    <link rel="Shortcut Icon" href="/favicon.ico"/>
+    {include file="common/header_source"}
+    <!--/meta 作为公共模版分离出去-->
+    <link rel="stylesheet" href="__STATIC__/lib/zTree/v3/css/zTreeStyle/zTreeStyle.css" type="text/css">
+    <title>添加现金卡</title>
+    <style>
+        .a {
+            overflow: hidden;
+        }
+
+        .a > div {
+            /*width: 50% !important;*/
+            float: left;
+        }
+
+        .pos-a {
+            position: static;
+        }
+    </style>
+</head>
+<body>
+<article class="page-container">
+    <form method="post" class="form form-horizontal" id="form-member-add">
+        <div id="hidden_input">
+            <input type="hidden" name="user_give_ids">
+            <!--<input type="hidden" hidden_type="user_give_num"  name="user_give_num" user_id="" value="">-->
+        </div>
+        <div class="row cl">
+            <label class="form-label col-xs-4 col-sm-2"><span class="c-red">*</span>名称：</label>
+            <div class="formControls col-xs-8 col-sm-9">
+                <input type="text" class="input-text" value="" placeholder="" name="card_name">
+            </div>
+        </div>
+        <div class="row cl" id="card_num">
+            <label class="form-label col-xs-4 col-sm-2"><span class="c-red">*</span>发放数量：</label>
+            <div class="formControls col-xs-8 col-sm-9">
+                <input type="text" class="input-text" placeholder="" name="card_num">
+            </div>
+        </div>
+        <div class="row cl">
+            <label class="form-label col-xs-4 col-sm-2"><span class="c-red">*</span>用户入账金额：</label>
+            <div class="formControls col-xs-8 col-sm-9">
+                <input type="text" class="input-text" placeholder="" name="card_money">
+            </div>
+        </div>
+        <div class="row cl" id="card_price">
+            <label class="form-label col-xs-4 col-sm-2"><span class="c-red">*</span>售价金额：</label>
+            <div class="formControls col-xs-8 col-sm-9">
+                <input type="text" class="input-text" placeholder="" name="card_price">
+            </div>
+        </div>
+        <div class="row cl" id="is_give">
+            <label class="form-label col-xs-4 col-sm-2"><span class="c-red">*</span>是否赠礼：</label>
+            <div class="formControls col-xs-8 col-sm-9">
+                <div class="skin-minimal">
+                    <div class="radio-box">
+                        <input type="radio" name="is_give" value="0" id="radio-1" checked>
+                        <label for="radio-1">否</label>
+                    </div>
+                    <div class="radio-box">
+                        <input type="radio" name="is_give" value="1" id="radio-2">
+                        <label for="radio-2">是</label>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="row cl" id="user_list_box" style="display: none;">
+            <label class="form-label col-xs-4 col-sm-2"><span class="c-red">*</span>选择赠送给谁：</label>
+            <div class="formControls col-xs-8 col-sm-9">
+                <div style="width: 100%;display: inline-block;" id="user_list">
+                    <table class="table table-border table-bordered table-bg">
+                        <thead>
+                        <tr class="text-c">
+                            <th width="5%"></th>
+                            <th width="5%">ID</th>
+                            <th width="35%">OpenId</th>
+                            <th width="20%">名称</th>
+                            <th width="20%">头像</th>
+                            <th width="20%">发放数量</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        {foreach $user_info as $key}
+                        <tr class="text-c">
+                            <td><input type="checkbox" value="{$key.id}" onchange="user_list_input_change(this,'{$key.id}')" user_list_input="checked" ></td>
+                            <td class="user_list_id">{$key.id}</td>
+                            <td>{$key.openid}</td>
+                            <td>{$key.nick_name}</td>
+                            <td><img src="{$key.avatar_url}" alt="" style="width: 45px;"></td>
+                            <td><input type="text" user_list_input="num" class="input-text" disabled onblur="user_card_sum(this)" user_id="{$key.id}"></td>
+                        </tr>
+                        {/foreach}
+                        </tbody>
+                    </table>
+                    <div class="paginate">
+                        {$page_info|raw}
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="row cl" id="put_time">
+            <label class="form-label col-xs-4 col-sm-2"><span class="c-red">*</span>发放开始时间</label>
+            <div class="formControls col-xs-8 col-sm-9">
+                <input type="text" name="put_time" {literal}onfocus="WdatePicker({ dateFmt:'yyyy-MM-dd HH:mm:ss'})" {/literal}
+                class="input-text Wdate" style="width:180px;">
+            </div>
+        </div>
+        <div class="row cl" id="put_end_time">
+            <label class="form-label col-xs-4 col-sm-2">发放结束时间</label>
+            <div class="formControls col-xs-8 col-sm-9">
+                <input type="text" name="put_end_time" {literal}onfocus="WdatePicker({ dateFmt:'yyyy-MM-dd HH:mm:ss'})"
+                       {/literal} class="input-text Wdate" style="width:180px;">
+            </div>
+            <span>不填默认永久</span>
+        </div>
+        <div class="row cl">
+            <label class="form-label col-xs-4 col-sm-2"><span class="c-red">*</span>使用开始时间</label>
+            <div class="formControls col-xs-8 col-sm-9">
+                <input type="text" name="start_time" {literal}onfocus="WdatePicker({ dateFmt:'yyyy-MM-dd HH:mm:ss'})" {/literal}
+                class="input-text Wdate" style="width:180px;">
+            </div>
+        </div>
+        <div class="row cl">
+            <label class="form-label col-xs-4 col-sm-2">使用截止时间</label>
+            <div class="formControls col-xs-8 col-sm-9">
+                <input type="text" name="end_time" {literal}onfocus="WdatePicker({ dateFmt:'yyyy-MM-dd HH:mm:ss'})" {/literal}
+                class="input-text Wdate" style="width:180px;">
+            </div>
+            <span>不填默认永久</span>
+        </div>
+        <div class="row cl">
+            <div class="col-xs-8 col-sm-9 col-xs-offset-4 col-sm-offset-2">
+                <input class="btn btn-primary radius" type="submit" value="&nbsp;&nbsp;提交&nbsp;&nbsp;">
+            </div>
+        </div>
+    </form>
+</article>
+
+<!--_footer 作为公共模版分离出去-->
+{include file="common/js"}
+<!--请在下方写此页面业务相关的脚本-->
+<script type="text/javascript" src="__STATIC__/lib/My97DatePicker/4.8/WdatePicker.js"></script>
+<script type="text/javascript" src="__STATIC__/lib/jquery.validation/1.14.0/jquery.validate.js"></script>
+<script type="text/javascript" src="__STATIC__/lib/jquery.validation/1.14.0/validate-methods.js"></script>
+<script type="text/javascript" src="__STATIC__/lib/jquery.validation/1.14.0/messages_zh.js"></script>
+<script type="text/javascript" src="__STATIC__/lib/zTree/v3/js/jquery.ztree.all-3.5.min.js"></script>
+<script type="text/javascript">
+    $(function () {
+        $('.skin-minimal input').iCheck({
+            checkboxClass: 'icheckbox-blue',
+            radioClass: 'iradio-blue',
+            increaseArea: '20%'
+        });
+        ;
+
+        //是否赠礼改变
+        $('#is_give ins').on('click',function(){
+            var input = $(this).prev();
+            if (input.val() == 1){    //证明选中是
+                $('#user_list_box').css('display','block');
+                $('#put_time').css('display','none');
+                $('#put_end_time').css('display','none');
+                $('#card_num').css('display','none');
+                $('#card_price').css('display','none');
+            } else{
+                $('#user_list_box').css('display','none');
+                $('#put_time').css('display','block');
+                $('#put_end_time').css('display','block');
+                $('#card_num').css('display','block');
+                $('#card_price').css('display','block');
+            }
+        })
+
+        //用户列表翻页事件
+        card_user_list_page = function(page){
+
+            $.ajax({
+                url:"{:url('admin/Card/add')}",
+                type:'post',
+                dataType:'json',
+                data:'page='+page,
+                success:function(data){
+                    $('#user_list').html(data);
+                    user_list_checked();
+                }
+            })
+        }
+
+        //用户列表翻页后 把已选的勾上
+        user_list_checked = function(){
+            //获取当前用户列表数据
+            var user_list_selected = $('input[user_list_input=checked]');
+            //获取到现在的input隐藏域数据
+            $('input[hidden_type=user_give_num]').each(function(key,value){
+                $(user_list_selected).each(function(key1,value1){
+                    if ($(value1).val() == $(value).attr('user_id')){
+                        //此处证明之前已选中
+
+                        //勾选上
+                        $(value1).prop('checked',true);
+                        //去掉disabled
+                        $(value1).parents('tr').find('input[type=text]').removeAttr('disabled');
+                        //修改 数量input value值
+                        $(value1).parents('tr').find('input[type=text]').val($(value).val());
+                    }
+                })
+            })
+
+
+
+            //循环比对
+        }
+
+        //用户列表改变勾选后的事件
+        user_list_input_change = function(_this,user_id){
+            var ids = $('input[name=user_give_ids]').val().split(',');
+
+            if (ids[0] == ''){
+                ids = [];
+            }
+            var status = $(_this).prop('checked');
+            var flag = false;
+            $.each(ids,function(index,value){
+                if (value == user_id){
+                    flag = index;
+                    return;
+                }
+            })
+            if (flag === false){  //如果数组没有
+                if (status){    //如果没选中    //添加到数组
+                    ids[ids.length] = user_id;
+                }
+            }else{  //如果有
+                if (!status){    //如果没选中      //从数组 删除
+                    ids.splice(flag,1);
+                }
+            }
+            $('input[name=user_give_ids]').val(ids.join(','));
+
+            var text = $(_this).parents('tr').find('input[user_list_input=num]');
+            //录入数量
+            if (status){        //如果选中了
+                text.val(1);
+                text.removeAttr('disabled');
+
+                //创建节点
+                let html = `<input type="hidden" hidden_type="user_give_num"  name="user_give_num[${user_id}]" user_id="${user_id}" value="1">`;
+
+                $('#hidden_input').append(html);
+
+            }else{      //如果没有选中
+                text.val(null);
+                text.attr('disabled','disabled');
+                text.removeAttr('name');
+
+                //删除节点
+
+                $('#hidden_input input[user_id='+user_id+']').remove();
+            }
+        }
+
+        //用户列表发放数量失去焦点时
+        user_card_sum = function(_this){
+            //修改隐藏域的input框 值
+            //        <input type="hidden" hidden_type="user_give_num"  name="user_give_num" user_id="" value="">
+            var sum = $(_this).val();
+            var user_id = $(_this).attr('user_id');
+            $('input[hidden_type=user_give_num][user_id='+user_id+']').val(sum);
+        }
+
+        //表单提交
+        $('form').submit(function () {
+            var data = new FormData($('form')[0]);
+            $.ajax({
+                url: "{:url('admin/Card/AddChange')}",
+                data: data,
+                type: 'post',
+                dataType: 'json',
+                processData: false,
+                contentType: false,
+                success: function (data) {
+                    if (data.code == 0) {
+                        layer.alert(data.msg);
+                    } else {
+                        layer.alert(data.msg, function () {
+                            var index = parent.layer.getFrameIndex(window.name);
+                            parent.layer.close(index);
+                        })
+                    }
+                }
+            })
+            return false;
+        })
+
+    });
+</script>
+<!--/请在上方写此页面业务相关的脚本-->
+</body>
+</html>
